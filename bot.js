@@ -38,16 +38,17 @@ client.addListener('message', function (from, to, message) {
             "author": from,
             "full_message": message
         });
-        
-        util.print('Saving link ' + links[0] + '...');
+        console.log('Link found: ' + links[0]);
     }
     
-    linkprovider.save(saveLinks, function(err, links) {
-        if (err) {
-            console.log('Error: ' + err);
-        } else {
-            console.log(' [Done!]');
-            util.inspect(links);
-        }
-    });
+    if (saveLinks.length > 0) {
+        util.print('Saving links...');
+        linkprovider.save(saveLinks, function(err, links) {
+            if (err) {
+                console.log('Error: ' + err);
+            } else {
+                console.log(' [Done!]');
+            }
+        });
+    }
 });
