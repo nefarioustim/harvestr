@@ -15,6 +15,11 @@ var irc = require('irc'),
     }),
     linkprovider = new LinkProvider();
 
+console.log('HarvestrBot "'+ config.name + '" logged into: ');
+console.log('  Host: ' + config.host);
+console.log('  Channel: ' + config.channel);
+console.log('');
+
 // Object spec
 // {
 //     "_id": "",
@@ -45,9 +50,10 @@ client.addListener('message', function (from, to, message) {
         util.print('Saving links...');
         linkprovider.save(saveLinks, function(err, links) {
             if (err) {
+                console.log(' [ FAILED ] ');
                 console.log('Error: ' + err);
             } else {
-                console.log(' [Done!]');
+                console.log(' [ DONE ]');
             }
         });
     }
