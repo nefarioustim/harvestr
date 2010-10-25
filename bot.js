@@ -12,7 +12,8 @@ var irc = require('irc'),
         userName: config.name,
         realName: config.name,
         channels: [config.channel]
-    });
+    }),
+    linkprovider = new LinkProvider();
 
 // Object spec
 // {
@@ -40,7 +41,7 @@ client.addListener('message', function (from, to, message) {
         
         sys.puts('Saving link: ' + links[0]);
         
-        LinkProvider.save(saveLinks, function(err, links) {
+        linkProvider.save(saveLinks, function(err, links) {
             if (err) {
                 sys.puts('Error: ' + err);
             } else {
