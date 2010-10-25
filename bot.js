@@ -40,13 +40,13 @@ client.addListener('message', function (from, to, message) {
         });
         
         sys.puts('Saving link: ' + links[0]);
-        
-        linkprovider.save(saveLinks, function(err, links) {
-            if (err) {
-                sys.puts('Error: ' + err);
-            } else {
-                sys.puts(links);
-            }
-        });
     }
+    
+    linkprovider.save(saveLinks, function(err, links) {
+        if (err) {
+            sys.puts('Error: ' + err);
+        } else {
+            sys.puts(links);
+        }
+    });
 });
