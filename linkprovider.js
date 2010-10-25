@@ -25,7 +25,7 @@ LinkProvider.prototype = {
             if (err) {
                 callback(err);
             } else {
-                collection.findOne({"url": url}, function(err2, result) {
+                collection.findOne({"url": url}, function(err, result) {
                     if (err) {
                         callback(err);
                     } else {

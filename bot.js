@@ -37,7 +37,7 @@ client.addListener('message', function (from, to, message) {
     while ((links = reLink.exec(message)) != null) {
         console.log('Link found: ' + links[0]);
         linkprovider.findByUrl(links[0], function(err, result) {
-            console.log(util.inspect(result));
+            console.log(arguments);
         });
         // saveLinks.push({
         //     "url": links[0],
