@@ -20,7 +20,24 @@ LinkProvider.prototype = {
     
     save: function(links, callback) {
         this.getCollection(function(err, collection) {
-            
+            if (err) {
+                callback(err);
+            } else {
+                if (typeof(links.length) == "undefined") {
+                    links = [links];
+                }
+                
+                for (var i = 0, j = links.length; i < j; i++) {
+                    link = links[i];
+                    link.created_at = new Date();
+                }
+                
+                collection.insert(links, function(){
+                    callback(null, links);
+                });
+            }
         });
     }
 };
+
+exports.LinkProvider = LinkProvider;
