@@ -1,5 +1,5 @@
 var irc = require('irc'),
-    sys = require('sys'),
+    util = require('util'),
     LinkProvider = require('./linkprovider.js').LinkProvider,
     config = {
         name: 'harvestr',
@@ -13,7 +13,7 @@ var irc = require('irc'),
         realName: config.name,
         channels: [config.channel]
     }),
-    linkprovider = new LinkProvider();
+    linkprovider = Object.create(LinkProvider);
 
 // Object spec
 // {
@@ -39,14 +39,15 @@ client.addListener('message', function (from, to, message) {
             "full_message": message
         });
         
-        sys.puts('Saving link: ' + links[0]);
+        util.print('Saving link ' + links[0] + '...');
     }
     
     linkprovider.save(saveLinks, function(err, links) {
         if (err) {
-            sys.puts('Error: ' + err);
+            console.log('Error: ' + err);
         } else {
-            sys.puts(links);
+            console.log(' [Done!]');
+            util.inspect(links);
         }
     });
 });
