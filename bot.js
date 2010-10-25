@@ -1,5 +1,6 @@
 var irc = require('irc'),
     sys = require('sys'),
+    LinkProvider = require('./linkprovider.js').LinkProvider,
     config = {
         name: 'harvestr',
         host: 'irc.redsrc.com',

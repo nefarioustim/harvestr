@@ -3,6 +3,8 @@ var Db = require('mongodb/db').Db,
     Server = require('mongodb/connection').Server;
 
 LinkProvider = function(host, port) {
+    host = host || 'localhost';
+    port = port || 27017;
     this.db = new Db('harvestr', new Server(host, port, {auto_reconnect: true}, {}));
     this.db.open(function(){});
 };
