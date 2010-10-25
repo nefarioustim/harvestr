@@ -1,11 +1,7 @@
 var irc = require('irc'),
     util = require('util'),
     LinkProvider = require('./linkprovider.js').LinkProvider,
-    config = {
-        name: 'harvestr',
-        host: 'irc.redsrc.com',
-        channel: '#botmageddon'
-    },
+    config = require('./config.js'),
     reName = new RegExp(config.name),
     reLink = /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*\w\-\@?^=%&amp;\/~\+#])?(\s|$)/gi,
     client = new irc.Client(config.host, config.name, {
