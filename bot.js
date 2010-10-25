@@ -1,7 +1,7 @@
 var irc = require('irc'),
     util = require('util'),
     LinkProvider = require('./linkprovider.js').LinkProvider,
-    config = require('./config.js'),
+    config = require('./config.js').config,
     reName = new RegExp(config.name),
     reLink = /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*\w\-\@?^=%&amp;\/~\+#])?(\s|$)/gi,
     client = new irc.Client(config.host, config.name, {
