@@ -11,6 +11,7 @@ var irc = require('irc'),
     }),
     linkprovider = new LinkProvider();
 
+console.log('');
 console.log('HarvestrBot "'+ config.name + '" logged into: ');
 console.log('  Host: ' + config.host);
 console.log('  Channel: ' + config.channel);
@@ -34,12 +35,15 @@ client.addListener('message', function (from, to, message) {
         saveLinks = [];
 
     while ((links = reLink.exec(message)) != null) {
-        saveLinks.push({
-            "url": links[0],
-            "author": from,
-            "full_message": message
-        });
         console.log('Link found: ' + links[0]);
+        linkprovider.findByUrl(links[0], function(err, result) {
+            console.log(util.inspect(result));
+        });
+        // saveLinks.push({
+        //     "url": links[0],
+        //     "author": from,
+        //     "full_message": message
+        // });
     }
     
     if (saveLinks.length > 0) {

@@ -20,6 +20,22 @@ LinkProvider.prototype = {
         });
     },
     
+    findByUrl: function(url, callback) {
+        this.getCollection(function(err, collection) {
+            if (err) {
+                callback(err);
+            } else {
+                collection.findOne({"url": url}, function(err2, result) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, result);
+                    }
+                });
+            }
+        });
+    },
+    
     save: function(links, callback) {
         this.getCollection(function(err, collection) {
             if (err) {
