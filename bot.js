@@ -28,21 +28,24 @@ client.addListener('message', function (from, to, message) {
         client.say(config.channel, 'Yarp '+from+'?');
     }
 
-    var links;
+    var links,
+        saveLinks = [];
 
     while ((links = reLink.exec(message)) != null) {
-        var now = new Date(),
-            dateSep = "-",
-            timeSep = ":",
-            debug = [
-                from,
-                ': ',
-                links[0],
-                ' [ ',
-                now,
-                ' ]'
-            ].join('');
+        saveLinks.push({
+            "url": links[0],
+            "author": from,
+            "full_message": message
+        });
         
-        sys.puts(debug);
+        sys.puts('Saving link: ' + links[0]);
+        
+        LinkProvider.save(saveLinks, function(err, links) {
+            if (err) {
+                sys.puts('Error: ' + err);
+            } else {
+                sys.puts(links);
+            }
+        });
     }
 });
