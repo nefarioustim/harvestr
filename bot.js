@@ -13,7 +13,7 @@ var irc = require('irc'),
         realName: config.name,
         channels: [config.channel]
     }),
-    linkprovider = Object.create(LinkProvider);
+    linkprovider = new LinkProvider();
 
 // Object spec
 // {
