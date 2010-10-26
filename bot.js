@@ -54,12 +54,14 @@ client.addListener('message', function (from, to, message) {
                     " posted that link on ",
                     result.created_at,
                     "."
-                ];
+                ].join('');
                 client.say(config.channel, message);
                 updateLinks.push({
                     "url": result.url,
                     "count": result.count++
                 });
+                
+                console.log(util.inspect(updateLinks));
             }
         });
     }
