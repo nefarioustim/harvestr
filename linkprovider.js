@@ -2,7 +2,7 @@ var util = require('util'),
     Db = require('mongodb/db').Db,
     ObjectID = require('mongodb/bson/bson').ObjectID,
     Server = require('mongodb/connection').Server,
-    debugMode = true;
+    debugMode = false;
     
 var debug = function(str) {
     if (debugMode) {
@@ -35,7 +35,6 @@ LinkProvider.prototype = {
             } else {
                 debug('Finding ' + url);
                 collection.findOne({"url": url}, {}, function(err, result) {
-                    debug('Callback arguments: ' + util.inspect(arguments));
                     if (err) {
                         debug('findByUrl error.');
                         callback(err);
@@ -64,6 +63,18 @@ LinkProvider.prototype = {
                 
                 collection.insert(links, function(){
                     callback(null, links);
+                });
+            }
+        });
+    },
+    
+    update: function(spec, updates, callback) {
+        this.getCollection(function(err, collection) {
+            if (err) {
+                callback(err);
+            } else {
+                collection.update(spec, updates, function(){
+                    callback(null, updates);
                 });
             }
         });

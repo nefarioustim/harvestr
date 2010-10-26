@@ -32,34 +32,65 @@ client.addListener('message', function (from, to, message) {
     }
 
     var links,
-        saveLinks = [];
+        saveLinks = [],
+        updateLinks = [];
 
     while ((links = reLink.exec(message)) != null) {
         console.log('Link found: ' + links[0]);
         var result = linkprovider.findByUrl(links[0], function(err, result) {
-            return result;
+            if (!result) {
+                saveLinks.push({
+                    "url": links[0],
+                    "author": from,
+                    "full_message": message,
+                    "count": 1
+                });
+            } else {
+                var message = [
+                    "Ring ring, ",
+                    from,
+                    ". ",
+                    result.author,
+                    " posted that link on ",
+                    result.created_at,
+                    "."
+                ];
+                client.say(config.channel, message);
+                updateLinks.push({
+                    "url": result.url,
+                    "count": result.count++
+                });
+            }
         });
-        
-        if (!result) {
-            saveLinks.push({
-                "url": links[0],
-                "author": from,
-                "full_message": message
-            });
-        } else {
-            console.log(util.inspect(result));
-        }
     }
     
     if (saveLinks.length > 0) {
         util.print('Saving links...');
         linkprovider.save(saveLinks, function(err, links) {
             if (err) {
-                console.log(' [ FAILED ] ');
+                console.log(' [ FAILED ]');
                 console.log('Error: ' + err);
             } else {
                 console.log(' [ DONE ]');
             }
         });
+    }
+    
+    if (updateLinks.length > 0) {
+        for (var i = 0, j = updateLinks.length; i < j; i++) {
+            util.print('Updating link count for '+updateLinks[i].url+'...');
+            linkprovider.update({
+                "url": updateLinks[i].url
+            }, {
+                "count": updateLinks[i].count
+            }, function(err) {
+                if (err) {
+                    console.log(' [ FAILED ]');
+                    console.log('Error: ' + err);
+                } else {
+                    console.log(' [ DONE ]');
+                }
+            });
+        }
     }
 });
