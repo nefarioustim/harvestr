@@ -23,6 +23,8 @@ client.addListener('message', function (from, to, message) {
     }
 
     var links,
+        saveFlag = false,
+        updateFlag = false,
         saveLinks = [],
         updateLinks = [];
 
@@ -30,13 +32,7 @@ client.addListener('message', function (from, to, message) {
         console.log('Link found: ' + links[0]);
         linkprovider.findByUrl(links[0], function(err, result) {
             if (!result) {
-                console.log(util.inspect(this));
-                saveLinks.push({
-                    "url": links[0],
-                    "author": from,
-                    "full_message": message,
-                    "count": 1
-                });
+                saveFlag = true;
             } else {
                 var message = [
                     "Ring ring, ",
@@ -48,14 +44,25 @@ client.addListener('message', function (from, to, message) {
                     "."
                 ].join('');
                 client.say(config.channel, message);
-                updateLinks.push({
-                    "url": result.url,
-                    "count": parseInt(result.count, 10) + 1
-                });
-                
-                console.log(util.inspect(updateLinks));
+                updateFlag = true;
             }
-        }, this);
+        });
+        
+        if (saveFlag) {
+            saveLinks.push({
+                "url": links[0],
+                "author": from,
+                "full_message": message,
+                "count": 1
+            });
+        }
+        
+        if (updateFlag) {
+            updateLinks.push({
+                "url": result.url,
+                "count": parseInt(result.count, 10) + 1
+            });
+        }
     }
     
     if (saveLinks.length > 0) {

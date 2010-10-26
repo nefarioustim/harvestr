@@ -28,19 +28,19 @@ LinkProvider.prototype = {
         });
     },
     
-    findByUrl: function(url, callback, scope) {
+    findByUrl: function(url, callback) {
         this.getCollection(function(err, collection) {
             if (err) {
-                callback.call(scope, err);
+                callback(err);
             } else {
                 debug('Finding ' + url);
                 collection.findOne({"url": url}, {}, function(err, result) {
                     if (err) {
                         debug('findByUrl error.');
-                        callback.call(scope, err);
+                        callback(err);
                     } else {
                         debug('findByUrl no error.');
-                        callback.call(scope, null, result);
+                        callback(null, result);
                     }
                 });
             }
