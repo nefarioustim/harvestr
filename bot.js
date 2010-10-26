@@ -3,7 +3,7 @@ var irc = require('irc'),
     LinkProvider = require('./linkprovider.js').LinkProvider,
     config = require('./config.js').config,
     reName = new RegExp(config.name),
-    reLink = /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*\w\-\@?^=%&amp;\/~\+#])?(\s|$)/gi,
+    reLink = /(http|ftp|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*\w\-\@?^=%&amp;\/~\+#])?/gi,
     client = new irc.Client(config.host, config.name, {
         userName: config.name,
         realName: config.name,
@@ -36,14 +36,19 @@ client.addListener('message', function (from, to, message) {
 
     while ((links = reLink.exec(message)) != null) {
         console.log('Link found: ' + links[0]);
-        linkprovider.findByUrl(links[0], function(err, result) {
-            console.log(arguments);
+        var result = linkprovider.findByUrl(links[0], function(err, result) {
+            return result;
         });
-        // saveLinks.push({
-        //     "url": links[0],
-        //     "author": from,
-        //     "full_message": message
-        // });
+        
+        if (!result) {
+            saveLinks.push({
+                "url": links[0],
+                "author": from,
+                "full_message": message
+            });
+        } else {
+            console.log(util.inspect(result));
+        }
     }
     
     if (saveLinks.length > 0) {

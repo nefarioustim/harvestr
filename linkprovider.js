@@ -1,6 +1,14 @@
-var Db = require('mongodb/db').Db,
+var util = require('util'),
+    Db = require('mongodb/db').Db,
     ObjectID = require('mongodb/bson/bson').ObjectID,
-    Server = require('mongodb/connection').Server;
+    Server = require('mongodb/connection').Server,
+    debugMode = true;
+    
+var debug = function(str) {
+    if (debugMode) {
+        console.log(str);
+    }
+};
 
 LinkProvider = function(host, port) {
     host = host || 'localhost';
@@ -25,11 +33,14 @@ LinkProvider.prototype = {
             if (err) {
                 callback(err);
             } else {
-                console.log('Found collection ' + collection.collectionName);
-                collection.findOne({"url": url}, function(err, result) {
+                debug('Finding ' + url);
+                collection.findOne({"url": url}, {}, function(err, result) {
+                    debug('Callback arguments: ' + util.inspect(arguments));
                     if (err) {
+                        debug('findByUrl error.');
                         callback(err);
                     } else {
+                        debug('findByUrl no error.');
                         callback(null, result);
                     }
                 });
