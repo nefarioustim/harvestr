@@ -58,7 +58,7 @@ client.addListener('message', function (from, to, message) {
                 client.say(config.channel, message);
                 updateLinks.push({
                     "url": result.url,
-                    "count": result.count++
+                    "count": parseInt(result.count)++
                 });
                 
                 console.log(util.inspect(updateLinks));
