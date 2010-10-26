@@ -27,12 +27,13 @@ client.addListener('message', function (from, to, message) {
         updateLinks = [];
 
     while ((links = reLink.exec(message)) != null) {
-        console.log('Link posted: ' + links[0]);
-        linkprovider.findByUrl(links[0], function(err, result) {
+        var postedUrl = links[0];
+        console.log('Link posted: ' + postedUrl);
+        linkprovider.findByUrl(postedUrl, function(err, result) {
             if (!result) {
                 console.log(message);
                 saveLinks.push({
-                    "url": links[0],
+                    "url": postedUrl,
                     "author": from,
                     "full_message": message,
                     "count": 1
