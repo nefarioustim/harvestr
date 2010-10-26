@@ -27,31 +27,32 @@ client.addListener('message', function (from, to, message) {
         updateLinks = [];
 
     while ((links = reLink.exec(message)) != null) {
-        console.log('Link found: ' + links[0]);
-        var result = linkprovider.findByUrl(links[0], function(err, result) { return result; });
-        console.log('Result: '+util.inspect(result));
-        if (!result) {
-            saveLinks.push({
-                "url": links[0],
-                "author": from,
-                "full_message": message,
-                "count": 1
-            });
-        } else {
-            client.say(config.channel, [
-                "Ring ring, ",
-                from,
-                ". ",
-                result.author,
-                " posted that link on ",
-                result.created_at,
-                "."
-            ].join(''));
-            updateLinks.push({
-                "url": result.url,
-                "count": parseInt(result.count, 10) + 1
-            });
-        }
+        console.log('Link posted: ' + links[0]);
+        linkprovider.findByUrl(links[0], function(err, result) {
+            if (!result) {
+                console.log(message);
+                saveLinks.push({
+                    "url": links[0],
+                    "author": from,
+                    "full_message": message,
+                    "count": 1
+                });
+            } else {
+                client.say(config.channel, [
+                    "Ring ring, ",
+                    from,
+                    ". ",
+                    result.author,
+                    " posted that link on ",
+                    result.created_at,
+                    "."
+                ].join(''));
+                updateLinks.push({
+                    "url": result.url,
+                    "count": parseInt(result.count, 10) + 1
+                });
+            }
+        });
     }
     
     if (saveLinks.length > 0) {
