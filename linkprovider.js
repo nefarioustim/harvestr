@@ -25,6 +25,7 @@ LinkProvider.prototype = {
             if (err) {
                 callback(err);
             } else {
+                console.log('Found collection ' + collection.collectionName);
                 collection.findOne({"url": url}, function(err, result) {
                     if (err) {
                         callback(err);
