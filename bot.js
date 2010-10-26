@@ -17,15 +17,6 @@ console.log('  Host: ' + config.host);
 console.log('  Channel: ' + config.channel);
 console.log('');
 
-// Object spec
-// {
-//     "_id": "",
-//     "url": "",
-//     "author": "",
-//     "full_message": "",
-//     "created_at": ""
-// }
-
 client.addListener('message', function (from, to, message) {
     if (reName.test(message)) {
         client.say(config.channel, 'Yarp '+from+'?');
@@ -37,8 +28,9 @@ client.addListener('message', function (from, to, message) {
 
     while ((links = reLink.exec(message)) != null) {
         console.log('Link found: ' + links[0]);
-        var result = linkprovider.findByUrl(links[0], function(err, result) {
+        linkprovider.findByUrl(links[0], function(err, result) {
             if (!result) {
+                console.log(util.inspect(this));
                 saveLinks.push({
                     "url": links[0],
                     "author": from,
@@ -58,12 +50,12 @@ client.addListener('message', function (from, to, message) {
                 client.say(config.channel, message);
                 updateLinks.push({
                     "url": result.url,
-                    "count": parseInt(result.count) + 1
+                    "count": parseInt(result.count, 10) + 1
                 });
                 
                 console.log(util.inspect(updateLinks));
             }
-        });
+        }, this);
     }
     
     if (saveLinks.length > 0) {
