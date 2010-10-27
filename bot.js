@@ -20,23 +20,29 @@ console.log('');
 client.addListener('message', function (from, to, message) {
     if (reName.test(message)) {
         client.say(config.channel, 'Yarp '+from+'?');
+        return;
     }
-
-    var links,
-        saveLinks = [],
-        updateLinks = [];
+    
+    var links;
 
     while ((links = reLink.exec(message)) != null) {
         var postedUrl = links[0];
         console.log('Link posted: ' + postedUrl);
         linkprovider.findByUrl(postedUrl, function(err, result) {
             if (!result) {
-                console.log(message);
-                saveLinks.push({
+                util.print('Saving link '+postedUrl+'...');
+                linkprovider.save({
                     "url": postedUrl,
                     "author": from,
                     "full_message": message,
                     "count": 1
+                }, function(err, links) {
+                    if (err) {
+                        console.log(' [ FAILED ]');
+                        console.log('Error: ' + err);
+                    } else {
+                        console.log(' [ DONE ]');
+                    }
                 });
             } else {
                 client.say(config.channel, [
@@ -48,41 +54,20 @@ client.addListener('message', function (from, to, message) {
                     result.created_at,
                     "."
                 ].join(''));
-                updateLinks.push({
-                    "url": result.url,
+                util.print('Updating link count for '+result.url+'...');
+                linkprovider.update({
+                    "url": result.url
+                }, {
                     "count": parseInt(result.count, 10) + 1
+                }, function(err) {
+                    if (err) {
+                        console.log(' [ FAILED ]');
+                        console.log('Error: ' + err);
+                    } else {
+                        console.log(' [ DONE ]');
+                    }
                 });
             }
         });
-    }
-    
-    if (saveLinks.length > 0) {
-        util.print('Saving links...');
-        linkprovider.save(saveLinks, function(err, links) {
-            if (err) {
-                console.log(' [ FAILED ]');
-                console.log('Error: ' + err);
-            } else {
-                console.log(' [ DONE ]');
-            }
-        });
-    }
-    
-    if (updateLinks.length > 0) {
-        for (var i = 0, j = updateLinks.length; i < j; i++) {
-            util.print('Updating link count for '+updateLinks[i].url+'...');
-            linkprovider.update({
-                "url": updateLinks[i].url
-            }, {
-                "count": updateLinks[i].count
-            }, function(err) {
-                if (err) {
-                    console.log(' [ FAILED ]');
-                    console.log('Error: ' + err);
-                } else {
-                    console.log(' [ DONE ]');
-                }
-            });
-        }
     }
 });
