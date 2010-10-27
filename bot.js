@@ -55,11 +55,10 @@ client.addListener('message', function (from, to, message) {
                     "."
                 ].join(''));
                 util.print('Updating link count for '+result.url+'...');
+                result.count = parseInt(result.count, 10) + 1;
                 linkprovider.update({
                     "url": result.url
-                }, {
-                    "count": parseInt(result.count, 10) + 1
-                }, function(err) {
+                }, result, function(err) {
                     if (err) {
                         console.log(' [ FAILED ]');
                         console.log('Error: ' + err);
